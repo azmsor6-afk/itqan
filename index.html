@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إِتْقَان - منصتك الذكية لتسميع واختبار وتثبيت القرآن الكريم</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b1324;
+      --card-bg: #152238;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-emerald: #10b981;
+      --accent-sky: #0ea5e9;
+      --accent-sky-dark: #0284c7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--card-bg);
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .brand-container { display: flex; flex-direction: column; gap: 0.2rem; }
+    .logo { font-size: 1.8rem; font-weight: 700; color: var(--accent-emerald); display: flex; align-items: center; gap: 0.6rem; }
+    .logo-subtitle { font-size: 0.82rem; color: var(--text-muted); }
+    .controls-top { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+
+    select, button {
+      font-family: 'Tajawal', sans-serif;
+      background: #1e2d4a;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .btn-toggle-blur { background: linear-gradient(135deg, var(--accent-sky), var(--accent-sky-dark)); border: none; font-weight: 600; }
+
+    .container { max-width: 950px; margin: 2rem auto; padding: 0 1.2rem; flex: 1; width: 100%; }
+
+    .surah-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem 1.5rem;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+    }
+
+    .surah-title { font-family: 'Amiri', serif; font-size: 2.6rem; color: var(--accent-emerald); margin-bottom: 0.4rem; }
+    .surah-meta { color: var(--text-muted); font-size: 0.95rem; }
+    .bismillah { font-family: 'Amiri', serif; font-size: 2rem; margin-top: 1.2rem; color: #e2e8f0; }
+
+    .quran-container {
+      background: var(--card-bg);
+      padding: 3rem 2.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      line-height: 3.2;
+      font-size: 2rem;
+      font-family: 'Amiri', serif;
+      text-align: justify;
+      direction: rtl;
+    }
+
+    .word { display: inline-block; padding: 0 0.3rem; margin: 0.15rem 0; position: relative; cursor: pointer; border-radius: 6px; }
+
+    .word.blurred { color: transparent !important; text-shadow: 0 0 18px rgba(255, 255, 255, 0.8); user-select: none; }
+    .word.blurred::after {
+      content: '';
+      position: absolute;
+      top: 18%; left: 0; right: 0; bottom: 18%;
+      background: linear-gradient(90deg, rgba(14, 165, 233, 0.85), rgba(2, 132, 199, 0.95));
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .word.revealed-mic { color: #34d399; font-weight: bold; }
+
+    .verse-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--accent-emerald);
+      color: var(--accent-emerald);
+      font-size: 1.1rem;
+      margin: 0 0.6rem;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .bottom-bar {
+      position: sticky; bottom: 0;
+      background: rgba(21, 34, 56, 0.92);
+      backdrop-filter: blur(16px);
+      padding: 1.2rem 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex; justifyContent: space-around; align-items: center; flex-wrap: wrap; gap: 1.2rem;
+    }
+
+    .mic-btn {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      border: none; color: white; font-size: 1.8rem;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+
+    .mic-btn.listening { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+    .stat-box { text-align: center; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent-emerald); }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+    .speech-transcript {
+      background: rgba(11, 19, 36, 0.7);
+      padding: 0.6rem 1.2rem; border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.95rem; color: #cbd5e1;
+      max-width: 320px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-container">
+      <div class="logo">📖 إِتْقَان (Itqan)</div>
+      <div class="logo-subtitle">منصتك الذكية لتسميع واختبار وتثبيت القرآن الكريم</div>
+    </div>
+
+    <div class="controls-top">
+      <select id="surahSelect" onchange="loadSurah()"><option value="">جاري التحميل...</option></select>
+      <select id="reciterSelect" onchange="loadSurah()">
+        <option value="ar.alafasy">مشاري العفاسي</option>
+        <option value="ar.husary">محمود خليل الحصري</option>
+        <option value="ar.minshawi">محمد صديق المنشاوي</option>
+      </select>
+      <button class="btn-toggle-blur" onclick="toggleAllBlur()" id="toggleBlurBtn">إظهار الكل 👁️</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="surah-header">
+      <h1 class="surah-title" id="surahNameTitle">اختر سورة</h1>
+      <p class="surah-meta" id="surahMetaTitle">قم باختيار سورة للبدء في التسميع</p>
+      <div class="bismillah" id="bismillahText" style="display: none;">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+    </div>
+
+    <div class="quran-container" id="quranDisplay">جاري تهيئة المصحف الشريف...</div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="stat-box">
+      <div class="stat-value" id="accuracyStat">0%</div>
+      <div class="stat-label">نسبة الإتقان</div>
+    </div>
+
+    <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎙️</button>
+
+    <div class="speech-transcript" id="transcriptText">اضغط الميكروفون وابدأ القراءة...</div>
+
+    <button onclick="playSurahAudio()" id="playAudioBtn">▶️ تشغيل التلاوة</button>
+  </div>
+
+  <script>
+    let currentSurahData = null, isAllBlurred = true, isListening = false, recognition = null, audioObject = null;
+    let totalWordsCount = 0, revealedWordsCount = 0;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'ar-SA';
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        document.getElementById('transcriptText').innerText = transcript;
+        processSpokenText(transcript);
+      };
+
+      recognition.onend = () => { if (isListening) recognition.start(); };
+    }
+
+    async function initSurahList() {
+      try {
+        const res = await fetch('https://api.alquran.cloud/v1/surah');
+        const data = await res.json();
+        const select = document.getElementById('surahSelect');
+        select.innerHTML = '';
+        data.data.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.number;
+          opt.textContent = `${s.number}. سورة ${s.name}`;
+          select.appendChild(opt);
+        });
+        select.value = 104;
+        loadSurah();
+      } catch (e) {}
+    }
+
+    async function loadSurah() {
+      const surahNum = document.getElementById('surahSelect').value;
+      const reciter = document.getElementById('reciterSelect').value;
+      document.getElementById('quranDisplay').innerHTML = 'جاري التحميل...';
+
+      try {
+        const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/${reciter}`);
+        const data = await res.json();
+        currentSurahData = data.data;
+
+        document.getElementById('surahNameTitle').innerText = `سورة ${currentSurahData.name}`;
+        document.getElementById('surahMetaTitle').innerText = `عدد آياتها ${currentSurahData.numberOfAyahs}`;
+        document.getElementById('bismillahText').style.display = (surahNum != 1 && surahNum != 9) ? 'block' : 'none';
+
+        renderSurahWords();
+      } catch (e) {}
+    }
+
+    function renderSurahWords() {
+      const display = document.getElementById('quranDisplay');
+      display.innerHTML = '';
+      totalWordsCount = 0; revealedWordsCount = 0;
+
+      currentSurahData.ayahs.forEach((ayah) => {
+        let text = ayah.text;
+        if (ayah.numberInSurah === 1 && currentSurahData.number !== 1 && text.startsWith("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")) {
+          text = text.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "").trim();
+        }
+
+        text.split(' ').forEach(wordStr => {
+          totalWordsCount++;
+          const span = document.createElement('span');
+          span.className = 'word blurred';
+          span.innerText = wordStr;
+          span.dataset.clean = normalizeArabic(wordStr);
+          span.onclick = () => toggleWordBlur(span);
+          display.appendChild(span);
+        });
+
+        const numSpan = document.createElement('span');
+        numSpan.className = 'verse-num';
+        numSpan.innerText = ayah.numberInSurah;
+        display.appendChild(numSpan);
+      });
+      updateAccuracy();
+    }
+
+    function toggleWordBlur(el) {
+      if (el.classList.contains('blurred')) {
+        el.classList.remove('blurred');
+        el.classList.add('revealed-mic');
+        revealedWordsCount++;
+      } else {
+        el.classList.add('blurred');
+        el.classList.remove('revealed-mic');
+        revealedWordsCount = Math.max(0, revealedWordsCount - 1);
+      }
+      updateAccuracy();
+    }
+
+    function toggleAllBlur() {
+      const words = document.querySelectorAll('.word');
+      if (isAllBlurred) {
+        words.forEach(w => { w.classList.remove('blurred'); w.classList.remove('revealed-mic'); });
+        isAllBlurred = false;
+        document.getElementById('toggleBlurBtn').innerText = 'إخفاء الكل 🙈';
+        revealedWordsCount = totalWordsCount;
+      } else {
+        words.forEach(w => { w.classList.add('blurred'); w.classList.remove('revealed-mic'); });
+        isAllBlurred = true;
+        document.getElementById('toggleBlurBtn').innerText = 'إظهار الكل 👁️';
+        revealedWordsCount = 0;
+      }
+      updateAccuracy();
+    }
+
+    function normalizeArabic(text) {
+      if (!text) return '';
+      return text.replace(/[\u064B-\u065F\u0670]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').trim();
+    }
+
+    function processSpokenText(transcript) {
+      const spokenWords = normalizeArabic(transcript).split(/\s+/);
+      document.querySelectorAll('.word.blurred').forEach(span => {
+        const cleanTarget = span.dataset.clean;
+        spokenWords.forEach(spoken => {
+          if (spoken.length > 1 && (cleanTarget.includes(spoken) || spoken.includes(cleanTarget))) {
+            span.classList.remove('blurred');
+            span.classList.add('revealed-mic');
+            revealedWordsCount++;
+          }
+        });
+      });
+      updateAccuracy();
+    }
+
+    function toggleMic() {
+      if (!recognition) return alert('يرجى استخدام متصفح Chrome.');
+      const btn = document.getElementById('micBtn');
+      if (isListening) {
+        recognition.stop();
+        isListening = false;
+        btn.classList.remove('listening');
+      } else {
+        recognition.start();
+        isListening = true;
+        btn.classList.add('listening');
+      }
+    }
+
+    function updateAccuracy() {
+      if (totalWordsCount === 0) return;
+      document.getElementById('accuracyStat').innerText = `${Math.round((revealedWordsCount / totalWordsCount) * 100)}%`;
+    }
+
+    function playSurahAudio() {
+      if (!currentSurahData) return;
+      let idx = 0;
+      function playNext() {
+        if (idx >= currentSurahData.ayahs.length) return;
+        audioObject = new Audio(currentSurahData.ayahs[idx].audio);
+        audioObject.play();
+        audioObject.onended = () => { idx++; playNext(); };
+      }
+      playNext();
+    }
+
+    window.onload = initSurahList;
+  </script>
+</body>
+</html>
