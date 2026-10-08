@@ -10,7 +10,7 @@
     :root {
       --bg-color: #0b1324;
       --card-bg: #152238;
-      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
       --accent-emerald: #10b981;
       --accent-sky: #0ea5e9;
       --accent-amber: #f59e0b;
@@ -20,15 +20,17 @@
       --text-muted: #94a3b8;
       --quran-font-size: 2.2rem;
       --blur-theme-color: rgba(14, 165, 233, 0.85);
+      --pattern-color: rgba(16, 185, 129, 0.05);
     }
 
     body.light-theme {
       --bg-color: #f8f6f0;
       --card-bg: #ffffff;
-      --card-border: rgba(0, 0, 0, 0.08);
+      --card-border: rgba(0, 0, 0, 0.1);
       --text-main: #1e293b;
       --text-muted: #64748b;
       --accent-emerald: #059669;
+      --pattern-color: rgba(5, 150, 105, 0.06);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,6 +38,10 @@
     body {
       font-family: 'Tajawal', sans-serif;
       background-color: var(--bg-color);
+      /* زخارف إسلامية للخلفية */
+      background-image: radial-gradient(var(--pattern-color) 2px, transparent 2px),
+                        url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2310b981' stroke-width='0.4' stroke-opacity='0.15'%3E%3Cpath d='M0 0l40 40M80 0L40 40M40 40l40 40M40 40L0 80M40 0v80M0 40h80'/%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 40px 40px, 80px 80px;
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -48,14 +54,14 @@
     header {
       background: var(--card-bg);
       padding: 1rem 1.2rem;
-      border-bottom: 1px solid var(--card-border);
+      border-bottom: 2px solid var(--accent-emerald);
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .brand { display: flex; align-items: center; gap: 0.6rem; font-size: 1.4rem; font-weight: 800; color: var(--accent-emerald); }
@@ -81,14 +87,19 @@
       .dashboard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
     }
 
+    /* زخارف للبطاقات */
     .app-card {
       background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px;
       padding: 1.4rem 1rem; display: flex; flex-direction: column; align-items: center; text-align: center;
-      cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; position: relative;
+      overflow: hidden;
+    }
+    .app-card::before {
+      content: '۞'; position: absolute; top: 4px; right: 8px; font-size: 0.8rem; color: var(--accent-emerald); opacity: 0.4;
     }
     .app-card:hover {
       transform: translateY(-4px); border-color: var(--accent-emerald);
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
     }
 
     .card-icon {
@@ -121,19 +132,20 @@
     .font-controls { display: flex; align-items: center; gap: 0.4rem; }
     .font-btn { padding: 0.3rem 0.7rem; font-weight: bold; font-size: 1rem; }
 
+    /* إطار إسلامي مزخرف للمصحف */
     .surah-frame-container {
-      position: relative; padding: 12px; background: var(--card-bg); border-radius: 24px;
-      border: 2px solid var(--accent-emerald); box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.1); margin-bottom: 1.5rem;
+      position: relative; padding: 16px; background: var(--card-bg); border-radius: 24px;
+      border: 2px solid var(--accent-emerald); box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.15); margin-bottom: 1.5rem;
     }
     .surah-frame-container::before {
-      content: '۞'; position: absolute; top: -14px; right: 20px; font-size: 1.5rem; color: var(--accent-emerald); background: var(--card-bg); padding: 0 8px;
+      content: '۩'; position: absolute; top: -14px; right: 20px; font-size: 1.6rem; color: var(--accent-emerald); background: var(--card-bg); padding: 0 8px;
     }
     .surah-frame-container::after {
-      content: '۞'; position: absolute; bottom: -14px; left: 20px; font-size: 1.5rem; color: var(--accent-emerald); background: var(--card-bg); padding: 0 8px;
+      content: '۩'; position: absolute; bottom: -14px; left: 20px; font-size: 1.6rem; color: var(--accent-emerald); background: var(--card-bg); padding: 0 8px;
     }
 
-    .surah-header { text-align: center; padding: 1.2rem 1rem; border-bottom: 1px dashed var(--card-border); }
-    .surah-title { font-family: 'Amiri', serif; font-size: 2.4rem; color: var(--accent-emerald); }
+    .surah-header { text-align: center; padding: 1.2rem 1rem; border-bottom: 1px dashed var(--card-border); position: relative; }
+    .surah-title { font-family: 'Amiri', serif; font-size: 2.5rem; color: var(--accent-emerald); }
     .bismillah { font-family: 'Amiri', serif; font-size: 1.8rem; margin-top: 0.8rem; }
 
     .quran-container {
@@ -205,12 +217,13 @@
     .nav-item .nav-icon { font-size: 1.3rem; }
     .nav-item.active { color: var(--accent-emerald); font-weight: 700; }
 
-    .azkar-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; }
+    .azkar-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; position: relative; }
+    .azkar-card::after { content: '🌸'; position: absolute; top: 10px; left: 10px; font-size: 0.8rem; opacity: 0.3; }
     .azkar-text { font-family: 'Amiri', serif; font-size: 1.4rem; line-height: 2; margin-bottom: 0.8rem; }
     .azkar-repeat { display: inline-block; background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.8rem; font-weight: bold; }
 
     .tasbeeh-ring {
-      width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--accent-emerald);
+      width: 180px; height: 180px; border-radius: 50%; border: 6px dashed var(--accent-emerald);
       margin: 1.5rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center;
       cursor: pointer; background: rgba(16, 185, 129, 0.05); transition: 0.1s;
     }
@@ -229,13 +242,13 @@
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85);
       display: none; justify-content: center; align-items: center; z-index: 1000; padding: 1rem;
     }
-    .modal-content { background: var(--card-bg); border-radius: 18px; padding: 1.5rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; border: 1px solid var(--card-border); }
+    .modal-content { background: var(--card-bg); border-radius: 18px; padding: 1.5rem; max-width: 650px; width: 100%; max-height: 80vh; overflow-y: auto; border: 1px solid var(--card-border); }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="brand">📖 إِتْقَان</div>
+    <div class="brand">📖 إِتْقَان ۞</div>
     <div class="header-actions">
       <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
       <button class="back-btn" id="backBtn" onclick="navigateTo('home')">← الرئيسية</button>
@@ -246,15 +259,15 @@
 
     <div id="homeDashboard">
       <div style="margin-bottom: 1.2rem; text-align: center;">
-        <h2 style="font-size: 1.4rem; color: var(--accent-emerald);">أهلاً بك في منصة إِتْقَان 👋</h2>
-        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.2rem;">اختر الخدمة المطلوبة للبدء فوراً</p>
+        <h2 style="font-size: 1.5rem; color: var(--accent-emerald);">أهلاً بك في منصة إِتْقَان ۞</h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.2rem;">تلاوة، أذكار، مسبحة وتفسير القرآن الكريم</p>
       </div>
 
       <div class="dashboard-grid">
         <div class="app-card" onclick="navigateTo('quran')">
           <div class="card-icon bg-emerald">📖</div>
           <div class="card-title">المصحف القارئ</div>
-          <div class="card-sub">تصفح وقراءة واستماع</div>
+          <div class="card-sub">تصفح واستماع واستماع الشيوخ</div>
         </div>
 
         <div class="app-card" onclick="startTestModeDirectly()">
@@ -263,10 +276,16 @@
           <div class="card-sub">تسميع صوتي وتظليل</div>
         </div>
 
+        <div class="app-card" onclick="navigateTo('tafseer')">
+          <div class="card-icon bg-purple">📜</div>
+          <div class="card-title">التفسير الميسر</div>
+          <div class="card-sub">اختر السورة واعُرض التفسير</div>
+        </div>
+
         <div class="app-card" onclick="navigateTo('azkar')">
           <div class="card-icon bg-amber">📿</div>
           <div class="card-title">أذكار المسلم</div>
-          <div class="card-sub">أذكار اليوم والليلة كامة</div>
+          <div class="card-sub">أذكار اليوم والليلة كاملة</div>
         </div>
 
         <div class="app-card" onclick="navigateTo('tasbeeh')">
@@ -284,19 +303,13 @@
         <div class="app-card" onclick="navigateTo('salawat')">
           <div class="card-icon bg-emerald">🌸</div>
           <div class="card-title">الصلاة على النبي</div>
-          <div class="card-sub">تنبيهات واستغفار</div>
+          <div class="card-sub">تنبيهات مستمرة واستغفار</div>
         </div>
 
         <div class="app-card" onclick="navigateTo('search')">
           <div class="card-icon bg-sky">🔍</div>
-          <div class="card-title">البحث والتفسير</div>
-          <div class="card-sub">بحث آيات والفرقان</div>
-        </div>
-
-        <div class="app-card" onclick="navigateTo('stats')">
-          <div class="card-icon bg-amber">📊</div>
-          <div class="card-title">سجل الإنجاز</div>
-          <div class="card-sub">نسبة الحفظ والتقدم</div>
+          <div class="card-title">البحث في الآيات</div>
+          <div class="card-sub">محرك بحث القرآن</div>
         </div>
       </div>
     </div>
@@ -316,8 +329,6 @@
           </select>
 
           <button id="playAudioBtn" class="btn-action" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="toggleAudio()">▶️ تشغيل التلاوة</button>
-
-          <button class="btn-action" style="background: linear-gradient(135deg, var(--accent-purple), #6d28d9);" onclick="loadFullSurahTafseer()">📜 تفسير السورة كاملة</button>
 
           <div class="font-controls">
             <button class="font-btn" onclick="adjustFontSize(0.2)">A+</button>
@@ -346,6 +357,17 @@
       </div>
     </div>
 
+    <div id="tafseerSection" class="app-section">
+      <div class="azkar-card" style="margin-bottom: 1.2rem;">
+        <h2 style="color: var(--accent-emerald); text-align: center; margin-bottom: 1rem;">📜 التفسير الميسر للسور</h2>
+        <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap;">
+          <select id="tafseerSurahSelect" style="min-width: 200px;"></select>
+          <button class="btn-action" onclick="loadSelectedSurahTafseer()">عرض التفسير الكامل 📜</button>
+        </div>
+      </div>
+      <div id="tafseerDisplayContainer"></div>
+    </div>
+
     <div id="azkarSection" class="app-section">
       <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem;">
         <button class="btn-action" onclick="loadAzkarCategory('sabah')">☀️ أذكار الصباح</button>
@@ -358,10 +380,10 @@
 
     <div id="tasbeehSection" class="app-section">
       <div style="text-align: center; padding: 1rem 0;">
-        <h2 style="color: var(--accent-emerald);">📿 المسبحة الرقمية</h2>
+        <h2 style="color: var(--accent-emerald);">📿 المسبحة الرقمية المزخرفة</h2>
         <div class="tasbeeh-ring" onclick="incrementTasbeeh()">
-          <span style="font-size: 3rem; font-weight: 800; color: var(--accent-emerald);" id="tasbeehCount">0</span>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">اضغط للتسبيح</span>
+          <span style="font-size: 3.2rem; font-weight: 800; color: var(--accent-emerald);" id="tasbeehCount">0</span>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">اضغط للتسبيح</span>
         </div>
         <button onclick="resetTasbeeh()">إعادة ضبط ↺</button>
       </div>
@@ -385,10 +407,12 @@
     <div id="salawatSection" class="app-section">
       <div class="azkar-card" style="text-align: center;">
         <h2 style="color: var(--accent-emerald); margin-bottom: 1rem;">🌸 التذكير بالصلاة على النبي</h2>
-        <select id="salawatTimerSelect" onchange="setupSalawatTimer()" style="width: 100%; max-width: 300px;">
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">اختر الفترة الزمنية وسيتم تذكيرك تلقائياً حتى عند إعادة فتح الصفحة</p>
+        <select id="salawatTimerSelect" onchange="changeSalawatTimerSetting()" style="width: 100%; max-width: 300px; font-size: 1rem; padding: 0.8rem;">
           <option value="0">🛑 إيقاف التذكير</option>
           <option value="15">🌸 كل 15 دقيقة</option>
           <option value="30">🌸 كل 30 دقيقة</option>
+          <option value="60">🌸 كل ساعة</option>
         </select>
       </div>
     </div>
@@ -399,15 +423,6 @@
         <button class="btn-action" onclick="searchQuran()">بحث 🔍</button>
       </div>
       <div id="searchResults"></div>
-    </div>
-
-    <div id="statsSection" class="app-section">
-      <div class="prayer-grid">
-        <div class="prayer-card">
-          <div style="color: var(--text-muted);">السور المكتملة</div>
-          <div style="font-size: 2rem; font-weight: 800; color: var(--accent-emerald);" id="statCompleted">0</div>
-        </div>
-      </div>
     </div>
 
   </div>
@@ -425,6 +440,9 @@
     <button class="nav-item" id="navQuran" onclick="navigateTo('quran')">
       <span class="nav-icon">📖</span><span>المصحف</span>
     </button>
+    <button class="nav-item" id="navTafseer" onclick="navigateTo('tafseer')">
+      <span class="nav-icon">📜</span><span>التفسير</span>
+    </button>
     <button class="nav-item" id="navAzkar" onclick="navigateTo('azkar')">
       <span class="nav-icon">📿</span><span>الأذكار</span>
     </button>
@@ -440,7 +458,7 @@
 
   <div id="appModal" class="modal-overlay">
     <div class="modal-content">
-      <h3 id="modalTitle" style="color: var(--accent-emerald); margin-bottom: 1rem;"></h3>
+      <h3 id="modalTitle" style="color: var(--accent-emerald); margin-bottom: 1rem; text-align: center;"></h3>
       <div id="modalBody" style="line-height: 1.8;"></div>
       <button onclick="closeModal()" style="margin-top: 1.2rem; width: 100%;" class="btn-action">إغلاق</button>
     </div>
@@ -448,53 +466,83 @@
 
   <script>
     document.addEventListener('contextmenu', e => e.preventDefault());
-    document.onkeydown = function(e) {
-      if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) return false;
-    };
 
     let currentSurahData = null, isTestMode = false, isListening = false, recognition = null;
     let totalWords = 0, revealedWords = 0, tasbeehVal = 0, currentFontSize = 2.2, prayerTimings = null;
     let currentAudio = new Audio();
     let isPlayingAudio = false;
+    let salawatIntervalId = null;
 
-    /* قائمة الأذكار الشاملة والكاملة */
-    const azkarData = {
-      sabah: [
-        { text: "اللَّهُ لاَ إِلَٰهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ... (آية الكرسي)", count: "مرة واحدة" },
-        { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: "مرة واحدة" },
-        { text: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ.", count: "مرة واحدة" },
-        { text: "اللَّهُمَّ أَنْتَ رَبِّي لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لاَ يَغْفِرُ الذُّنُوبَ إِلاَّ أَنْتَ.", count: "سيد الاستغفار" },
-        { text: "قُلْ هُوَ اللَّهُ أَحَدٌ ... قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ... قُلْ أَعُوذُ بِرَبِّ النَّاسِ", count: "3 مرات" },
-        { text: "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: "3 مرات" },
-        { text: "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلاَمِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا.", count: "3 مرات" },
-        { text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.", count: "3 مرات" }
-      ],
-      misa: [
-        { text: "اللَّهُ لاَ إِلَٰهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ... (آية الكرسي)", count: "مرة واحدة" },
-        { text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ.", count: "مرة واحدة" },
-        { text: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ.", count: "مرة واحدة" },
-        { text: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: "3 مرات" },
-        { text: "قُلْ هُوَ اللَّهُ أَحَدٌ ... قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ... قُلْ أَعُوذُ بِرَبِّ النَّاسِ", count: "3 مرات" },
-        { text: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلاَ تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ.", count: "مرة واحدة" }
-      ],
-      salat: [
-        { text: "أَسْتَغْفِرُ اللَّهَ (ثَلاَثاً)... اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ، تَبَارَكْتَ يَا ذَا الْجَلاَلِ وَالإِكْرَامِ.", count: "بعد الصلاة" },
-        { text: "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: "مرة واحدة" },
-        { text: "سُبْحَانَ اللَّهِ (33) ، الْحَمْدُ لِلَّهِ (33) ، اللَّهُ أَكْبَرُ (33)", count: "تسبيح الصلاة" },
-        { text: "قراءة آية الكرسي بعد كل صلاة مكتوبة.", count: "مرة واحدة" }
-      ],
-      naum: [
-        { text: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ.", count: "مرة واحدة" },
-        { text: "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.", count: "3 مرات" },
-        { text: "سُبْحَانَ اللَّهِ (34) ، الْحَمْدُ لِلَّهِ (33) ، اللَّهُ أَكْبَرُ (33)", count: "عند النوم" }
-      ]
-    };
+    /* 1. حفظ واسترجاع مظهر النهار/الليل */
+    function applySavedTheme() {
+      const savedTheme = localStorage.getItem('appTheme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('themeBtn').innerText = '☀️';
+      } else {
+        document.body.classList.remove('light-theme');
+        document.getElementById('themeBtn').innerText = '🌙';
+      }
+    }
 
     function toggleTheme() {
       document.body.classList.toggle('light-theme');
       const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('appTheme', isLight ? 'light' : 'dark');
       document.getElementById('themeBtn').innerText = isLight ? '☀️' : '🌙';
     }
+
+    /* 2. إصلاح وحفظ إعدادات الصلاة على النبي */
+    function initSalawatTimer() {
+      const savedVal = localStorage.getItem('salawatInterval') || "0";
+      const selectElem = document.getElementById('salawatTimerSelect');
+      if (selectElem) selectElem.value = savedVal;
+      setupSalawatInterval(savedVal);
+    }
+
+    function changeSalawatTimerSetting() {
+      const val = document.getElementById('salawatTimerSelect').value;
+      localStorage.setItem('salawatInterval', val);
+      setupSalawatInterval(val);
+      if (val !== "0") alert(`تم تفعيل التذكير بالصلاة على النبي كل ${val} دقيقة بنجاح.`);
+    }
+
+    function setupSalawatInterval(minutes) {
+      if (salawatIntervalId) clearInterval(salawatIntervalId);
+      const m = parseInt(minutes);
+      if (m > 0) {
+        salawatIntervalId = setInterval(() => {
+          showSalawatPopup();
+        }, m * 60 * 1000);
+      }
+    }
+
+    function showSalawatPopup() {
+      openModal("🌸 الصلاة على النبي ﷺ", "<div style='text-align:center; font-size:1.5rem; color:var(--accent-emerald); padding:1rem;'>اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّدٍ 🌸</div>");
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('🌸 تذكير الصلاة على النبي', { body: 'اللَّهُمَّ صَلِّ وَسَلِّمْ وَبَارِكْ عَلَى نَبِيِّنَا مُحَمَّدٍ' });
+      }
+    }
+
+    /* قائمة الأذكار الشاملة */
+    const azkarData = {
+      sabah: [
+        { text: "اللَّهُ لاَ إِلَٰهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ... (آية الكرسي)", count: "مرة واحدة" },
+        { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ.", count: "مرة واحدة" },
+        { text: "اللَّهُمَّ أَنْتَ رَبِّي لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ...", count: "سيد الاستغفار" },
+        { text: "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: "3 مرات" }
+      ],
+      misa: [
+        { text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ.", count: "مرة واحدة" },
+        { text: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: "3 مرات" }
+      ],
+      salat: [
+        { text: "أَسْتَغْفِرُ اللَّهَ (ثَلاَثاً)... اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ، تَبَارَكْتَ يَا ذَا الْجَلاَلِ وَالإِكْرَامِ.", count: "بعد الصلاة" }
+      ],
+      naum: [
+        { text: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ...", count: "مرة واحدة" }
+      ]
+    };
 
     function adjustFontSize(delta) {
       currentFontSize = Math.max(1.4, Math.min(3.5, currentFontSize + delta));
@@ -525,6 +573,7 @@
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       if (secId === 'home') document.getElementById('navHome').classList.add('active');
       if (secId === 'quran') document.getElementById('navQuran').classList.add('active');
+      if (secId === 'tafseer') document.getElementById('navTafseer').classList.add('active');
       if (secId === 'azkar') document.getElementById('navAzkar').classList.add('active');
       if (secId === 'prayer') document.getElementById('navPrayer').classList.add('active');
 
@@ -562,18 +611,25 @@
       renderSurahWords();
     }
 
+    /* تهيئة السور في القوائم */
     async function initSurahList() {
       try {
         const res = await fetch('https://api.alquran.cloud/v1/surah');
         const data = await res.json();
-        const sel = document.getElementById('surahSelect');
-        sel.innerHTML = '';
+        const sel1 = document.getElementById('surahSelect');
+        const sel2 = document.getElementById('tafseerSurahSelect');
+        sel1.innerHTML = ''; sel2.innerHTML = '';
         data.data.forEach(s => {
-          const opt = document.createElement('option');
-          opt.value = s.number; opt.textContent = `${s.number}. ${s.name}`;
-          sel.appendChild(opt);
+          const opt1 = document.createElement('option');
+          opt1.value = s.number; opt1.textContent = `${s.number}. ${s.name}`;
+          sel1.appendChild(opt1);
+
+          const opt2 = document.createElement('option');
+          opt2.value = s.number; opt2.textContent = `${s.number}. ${s.name}`;
+          sel2.appendChild(opt2);
         });
-        sel.value = 104; loadSurah();
+        sel1.value = 1; loadSurah();
+        sel2.value = 1; loadSelectedSurahTafseer();
       } catch (e) {}
     }
 
@@ -624,37 +680,41 @@
         const numSpan = document.createElement('span');
         numSpan.className = 'verse-num';
         numSpan.innerText = ayah.numberInSurah;
-        numSpan.title = "اضغط لقراءة تفسير الآية";
+        numSpan.title = "اضغط لقراءة التفسير الميسر";
         numSpan.onclick = () => showTafseer(currentSurahData.number, ayah.numberInSurah);
         display.appendChild(numSpan);
       });
       updateAccuracy();
     }
 
-    /* تشغيل تلاوة القرآن الكريم بصوت الشيخ */
-    function toggleAudio() {
+    /* 3. إصلاح كامل لمشغل الصوت وقراءة الشيوخ */
+    async function toggleAudio() {
       const num = document.getElementById('surahSelect').value;
       const reciter = document.getElementById('reciterSelect').value;
       const btn = document.getElementById('playAudioBtn');
 
       if (isPlayingAudio) {
         stopAudio();
-      } else {
-        const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${num}.mp3`;
-        currentAudio.src = audioUrl;
-        btn.innerText = '⏳ جاري التحميل...';
-        currentAudio.play().then(() => {
-          isPlayingAudio = true;
-          btn.innerText = '⏸️ إيقاف التلاوة';
-        }).catch(e => {
-          alert('تعذر تشغيل الصوت، جرب اختيار قارئ آخر.');
-          stopAudio();
-        });
+        return;
+      }
+
+      btn.innerText = '⏳ جاري التحميل...';
+      const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${num}.mp3`;
+      currentAudio.src = audioUrl;
+
+      try {
+        await currentAudio.play();
+        isPlayingAudio = true;
+        btn.innerText = '⏸️ إيقاف التلاوة';
+      } catch (e) {
+        alert('تعذر تشغيل الصوت لهذا القارئ، يرجى المحاولة مرة أخرى أو اختيار قارئ آخر.');
+        stopAudio();
       }
     }
 
     function stopAudio() {
       currentAudio.pause();
+      currentAudio.currentTime = 0;
       isPlayingAudio = false;
       const btn = document.getElementById('playAudioBtn');
       if (btn) btn.innerText = '▶️ تشغيل التلاوة';
@@ -669,28 +729,31 @@
 
     currentAudio.onended = () => { stopAudio(); };
 
-    /* تحميل عرض تفسير السورة كاملة */
-    async function loadFullSurahTafseer() {
-      const num = document.getElementById('surahSelect').value;
-      openModal("جاري تحميل تفسير السورة...", "يرجى الانتظار قليلاً...");
+    /* 4. قسم عرض تفسير السورة المختارة من القائمة */
+    async function loadSelectedSurahTafseer() {
+      const surahNum = document.getElementById('tafseerSurahSelect').value;
+      const container = document.getElementById('tafseerDisplayContainer');
+      container.innerHTML = '<div style="text-align:center; padding:2rem;">جاري تحميل التفسير الميسر...</div>';
+
       try {
-        const res = await fetch(`https://api.alquran.cloud/v1/surah/${num}/ar.muyassar`);
+        const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/ar.muyassar`);
         const data = await res.json();
-        let html = `<div style="text-align:right;"><h2 style="color:var(--accent-emerald); text-align:center; margin-bottom:1.2rem;">تفسير سورة ${data.data.name} (الميسر)</h2>`;
-        data.data.ayahs.forEach(a => {
-          html += `<div style="margin-bottom:1rem; padding-bottom:0.8rem; border-bottom:1px solid var(--card-border);">
-            <strong style="color:var(--accent-amber);">[الآية ${a.numberInSurah}]:</strong>
-            <p style="margin-top:0.4rem; font-size:1.05rem;">${a.text}</p>
-          </div>`;
-        });
-        html += `</div>`;
-        openModal(`تفسير سورة ${data.data.name} كاملة`, html);
+        if (data.code === 200) {
+          let html = `<h3 style="color:var(--accent-emerald); text-align:center; margin-bottom:1.2rem;">تفسير سورة ${data.data.name} (التفسير الميسر)</h3>`;
+          data.data.ayahs.forEach(a => {
+            html += `<div class="azkar-card">
+              <div style="color:var(--accent-amber); font-weight:bold; margin-bottom:0.5rem;">[الآية ${a.numberInSurah}]</div>
+              <div style="font-size:1.1rem; line-height:1.9;">${a.text}</div>
+            </div>`;
+          });
+          container.innerHTML = html;
+        }
       } catch(e) {
-        openModal("خطأ", "تعذر جلب التفسير حالياً.");
+        container.innerHTML = '<div style="color:var(--accent-rose); text-align:center;">تعذر تحميل التفسير، يرجى التوصيل بالإنترنت.</div>';
       }
     }
 
-    /* عرض تفسير الآية عند النقر عليها */
+    /* عرض تفسير الآية المنفردة */
     async function showTafseer(surah, ayah) {
       openModal("جاري تحميل التفسير...", "يرجى الانتظار...");
       try {
@@ -756,7 +819,7 @@
     }
     function resetTasbeeh() { tasbeehVal = 0; document.getElementById('tasbeehCount').innerText = 0; }
 
-    /* مواقيت الصلاة والعداد التنازلي المحدث المضبوط */
+    /* مواقيت الصلاة والعداد التنازلي */
     async function fetchPrayerTimes() {
       try {
         const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Cairo&country=Egypt');
@@ -842,7 +905,13 @@
     function openModal(t, b) { document.getElementById('modalTitle').innerText = t; document.getElementById('modalBody').innerHTML = b; document.getElementById('appModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('appModal').style.display = 'none'; }
 
-    window.onload = () => { initSurahList(); fetchPrayerTimes(); navigateTo('home'); };
+    window.onload = () => {
+      applySavedTheme();
+      initSalawatTimer();
+      initSurahList();
+      fetchPrayerTimes();
+      navigateTo('home');
+    };
   </script>
 </body>
 </html>
