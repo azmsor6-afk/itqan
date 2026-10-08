@@ -297,7 +297,7 @@
       } else {
         words.forEach(w => { w.classList.add('blurred'); w.classList.remove('revealed-mic'); });
         isAllBlurred = true;
-        document.getElementById('toggleBlurBtn').innerText = 'إظهار الكل 👁️';
+        document.getElementById('toggleBlurBtn').innerText = 'إظهر الكل 👁️';
         revealedWordsCount = 0;
       }
       updateAccuracy();
@@ -309,17 +309,36 @@
     }
 
     function processSpokenText(transcript) {
-      const spokenWords = normalizeArabic(transcript).split(/\s+/);
-      document.querySelectorAll('.word.blurred').forEach(span => {
-        const cleanTarget = span.dataset.clean;
-        spokenWords.forEach(spoken => {
-          if (spoken.length > 1 && (cleanTarget.includes(spoken) || spoken.includes(cleanTarget))) {
-            span.classList.remove('blurred');
-            span.classList.add('revealed-mic');
-            revealedWordsCount++;
+      const spokenWords = normalizeArabic(transcript).split(/\s+/).filter(w => w.length > 0);
+      const blurredWords = Array.from(document.querySelectorAll('.word.blurred'));
+      
+      if (blurredWords.length === 0) return;
+
+      let matchIndex = 0;
+
+      spokenWords.forEach(spoken => {
+        if (spoken.length < 2) return;
+
+        // البحث التسلسلي في الكلمات المخفية القادمة بالترتيب
+        for (let offset = 0; offset < 3 && (matchIndex + offset) < blurredWords.length; offset++) {
+          const targetSpan = blurredWords[matchIndex + offset];
+          const cleanTarget = targetSpan.dataset.clean;
+
+          if (cleanTarget.includes(spoken) || spoken.includes(cleanTarget)) {
+            for (let i = 0; i <= offset; i++) {
+              const spanToReveal = blurredWords[matchIndex + i];
+              if (spanToReveal && spanToReveal.classList.contains('blurred')) {
+                spanToReveal.classList.remove('blurred');
+                spanToReveal.classList.add('revealed-mic');
+                revealedWordsCount++;
+              }
+            }
+            matchIndex += offset + 1;
+            break;
           }
-        });
+        }
       });
+
       updateAccuracy();
     }
 
