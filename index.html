@@ -205,7 +205,7 @@
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
       background: var(--card-bg); border-top: 1px solid var(--card-border);
-      display: flex; justify-content: space-around; align-items: center; z-index: 100;
+      display: flex; justify-space-around; align-items: center; z-index: 100;
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
@@ -254,6 +254,7 @@
 
   <div class="container">
 
+    <!-- 1. الرئيسية -->
     <div id="homeDashboard">
       <div style="margin-bottom: 1.2rem; text-align: center;">
         <h2 style="font-size: 1.5rem; color: var(--accent-emerald);">أهلاً بك في منصة إِتْقَان ۞</h2>
@@ -311,6 +312,7 @@
       </div>
     </div>
 
+    <!-- 2. المصحف -->
     <div id="quranSection" class="app-section">
       <div class="quran-tools-compact">
         <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
@@ -350,6 +352,7 @@
       </div>
     </div>
 
+    <!-- 3. قسم التفسير -->
     <div id="tafseerSection" class="app-section">
       <div class="azkar-card" style="margin-bottom: 1.2rem;">
         <h2 style="color: var(--accent-emerald); text-align: center; margin-bottom: 1rem;">📜 التفسير الميسر للسور</h2>
@@ -361,6 +364,7 @@
       <div id="tafseerDisplayContainer"></div>
     </div>
 
+    <!-- 4. الأذكار الكاملة -->
     <div id="azkarSection" class="app-section">
       <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.2rem; justify-content: center;">
         <button class="btn-action" onclick="loadAzkarCategory('sabah')">☀️ أذكار الصباح</button>
@@ -372,6 +376,7 @@
       <div id="azkarListContainer"></div>
     </div>
 
+    <!-- 5. المسبحة -->
     <div id="tasbeehSection" class="app-section">
       <div style="text-align: center; padding: 1rem 0;">
         <h2 style="color: var(--accent-emerald);">📿 المسبحة الرقمية</h2>
@@ -383,6 +388,7 @@
       </div>
     </div>
 
+    <!-- 6. عداد الصلاة على النبي -->
     <div id="salawatSection" class="app-section">
       <div style="text-align: center; padding: 1rem 0;">
         <h2 style="color: var(--accent-rose);">🌸 عداد الصلاة على النبي ﷺ</h2>
@@ -399,6 +405,7 @@
       </div>
     </div>
 
+    <!-- 7. مواقيت الصلاة -->
     <div id="prayerSection" class="app-section">
       <div class="next-prayer-card">
         <div class="next-prayer-title">الصلاة القادمة</div>
@@ -413,6 +420,7 @@
       <div class="prayer-grid" id="prayerTimesGrid"></div>
     </div>
 
+    <!-- 8. البحث -->
     <div id="searchSection" class="app-section">
       <div style="display: flex; gap: 0.5rem; margin-bottom: 1.2rem;">
         <input type="text" id="searchInput" placeholder="اكتب كلمة أو آية للبحث..." style="flex: 1;">
@@ -423,12 +431,14 @@
 
   </div>
 
+  <!-- الكبسولة العائمة للمايك التسميع الصوتي -->
   <div class="compact-floating-bar" id="compactFloatingBar">
     <button class="mic-btn-small" id="micBtnSmall" onclick="toggleMic()">🎙️</button>
     <div class="badge-accuracy" id="accuracyStatSmall">0%</div>
     <div class="transcript-line" id="transcriptTextSmall">ابدأ القراءة...</div>
   </div>
 
+  <!-- الشريط السفلي -->
   <div class="bottom-nav">
     <button class="nav-item active" id="navHome" onclick="navigateTo('home')">
       <span class="nav-icon">🏠</span><span>الرئيسية</span>
@@ -468,17 +478,6 @@
     let currentAudio = new Audio();
     let isPlayingAudio = false;
 
-    /* نطق الكلمة المحددة فور كشف التمويه */
-    function speakWord(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ar-SA';
-        utterance.rate = 0.85;
-        window.speechSynthesis.speak(utterance);
-      }
-    }
-
     /* 1. المظهر */
     function applySavedTheme() {
       const savedTheme = localStorage.getItem('appTheme');
@@ -506,7 +505,7 @@
         { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: "مرة واحدة" },
         { text: "اللَّهُمَّ أَنْتَ رَبِّي لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لاَ يَغْفِرُ الذُّنُوبَ إِلاَّ أَنْتَ.", count: "سيد الاستغفار - مرة واحدة" },
         { text: "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلاَئِكَتَكَ وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لاَ إِلَهَ إِلاَّ أَنْتَ وَحْدَكَ لاَ شَرِيكَ لَهُ، وَأَنَّ مُحَمَّداً عَبْدُكَ وَرَسُولُكَ.", count: "4 مرات" },
-        { text: "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: "3 مرات" },
+        { text: "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلاَ فِي السَّماءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: "3 مرات" },
         { text: "رَضِيتُ بِاللَّهِ رَبّاً، وَبِالإِسْلاَمِ دِيناً، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيّاً.", count: "3 مرات" },
         { text: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلاَ تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ.", count: "مرة واحدة" },
         { text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.", count: "3 مرات" }
@@ -543,16 +542,30 @@
       document.documentElement.style.setProperty('--blur-theme-color', colorVal);
     }
 
-    /* 3. التعرف الصوتي وتفكيك التمويه لحظياً */
+    /* 3. التعرف الصوتي المطور وتحويل الحروف المقطعة وتجريد النص العثماني */
     function normalizeArabic(text) {
       if (!text) return '';
-      return text
-        .replace(/[\u064B-\u065F\u0670]/g, '')
-        .replace(/[أإآٱ]/g, 'ا')
+      let cleaned = text
+        .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]/g, '') // إزالة التشكيل والألف الخنجرية وعلامات المصحف
+        .replace(/[أإآٱ]/g, 'ا') // توحيد صور الهمزات
         .replace(/ة/g, 'ه')
         .replace(/ى/g, 'ي')
-        .replace(/[^\w\sء-ي]/gi, '')
+        .replace(/[^\w\sء-ي]/gi, '') // إزالة الرموز
         .trim();
+
+      // تحويل نطق الحروف المقطعة المنطوقة إلى الرسم القرآني المكتوب
+      cleaned = cleaned
+        .replace(/\bالف لام ميم\b/g, 'الم')
+        .replace(/\bالف لام را\b/g, 'الر')
+        .replace(/\bالف لام ميم ص\b/g, 'المص')
+        .replace(/\bالف لام ميم را\b/g, 'المر')
+        .replace(/\bكاف ها يا عين صاد\b/g, 'كهيعص')
+        .replace(/\bطا سين ميم\b/g, 'طسم')
+        .replace(/\bطا سين\b/g, 'طس')
+        .replace(/\bحاميم\b/g, 'حم')
+        .replace(/\bعين سين قاف\b/g, 'عسق');
+
+      return cleaned;
     }
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -573,21 +586,24 @@
 
     function processSpokenText(transcript) {
       if (!isTestMode) return;
-      const spokenWords = normalizeArabic(transcript).split(/\s+/).filter(w => w.length > 0);
+      const cleanSpoken = normalizeArabic(transcript);
+      const spokenWords = cleanSpoken.split(/\s+/).filter(w => w.length > 0);
       const blurredSpans = Array.from(document.querySelectorAll('.word.blurred'));
 
       if (blurredSpans.length === 0) return;
 
       spokenWords.forEach(spoken => {
-        if (spoken.length < 2) return;
+        if (spoken.length < 1) return;
+        // الفحص في الكلمات الخمس التالية لضمان عدم توقف النظام عند كلمة واحدة
         for (let i = 0; i < Math.min(5, blurredSpans.length); i++) {
           const target = blurredSpans[i];
+          if (!target.classList.contains('blurred')) continue;
+
           const cleanTarget = target.dataset.clean;
           if (cleanTarget && (cleanTarget === spoken || cleanTarget.includes(spoken) || spoken.includes(cleanTarget))) {
             target.classList.remove('blurred');
             target.classList.add('revealed-mic');
             revealedWords++;
-            speakWord(target.innerText);
             break;
           }
         }
@@ -676,6 +692,17 @@
         document.getElementById('surahNameTitle').innerText = `سورة ${currentSurahData.name}`;
         document.getElementById('surahMetaTitle').innerText = `آياتها ${currentSurahData.numberOfAyahs} | ${currentSurahData.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}`;
         document.getElementById('bismillahText').style.display = (num != 1 && num != 9) ? 'block' : 'none';
+
+        // اقتطاع البسملة نهائياً من نص الآية الأولى لكل السور عدا الفاتحة والتوبة
+        if (num != 1 && num != 9 && currentSurahData.ayahs.length > 0) {
+          let firstAyah = currentSurahData.ayahs[0];
+          let cleanFirst = normalizeArabic(firstAyah.text);
+          if (cleanFirst.startsWith("بسم الله الرحمن الرحيم")) {
+            let words = firstAyah.text.trim().split(/\s+/);
+            firstAyah.text = words.slice(4).join(" ");
+          }
+        }
+
         renderSurahWords();
       } catch (e) {}
     }
@@ -686,9 +713,6 @@
 
       currentSurahData.ayahs.forEach((ayah) => {
         let text = ayah.text;
-        if (ayah.numberInSurah === 1 && currentSurahData.number !== 1 && text.startsWith("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ")) {
-          text = text.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "").trim();
-        }
 
         text.split(/\s+/).forEach(w => {
           if(!w) return;
@@ -699,14 +723,9 @@
           span.dataset.clean = normalizeArabic(w);
           span.onclick = () => {
             if (span.classList.contains('blurred')) {
-              span.classList.remove('blurred'); 
-              span.classList.add('revealed-mic'); 
-              revealedWords++;
-              speakWord(w); /* نطق الكلمة المحددة فوراً */
+              span.classList.remove('blurred'); span.classList.add('revealed-mic'); revealedWords++;
             } else if (isTestMode) {
-              span.classList.add('blurred'); 
-              span.classList.remove('revealed-mic'); 
-              revealedWords--;
+              span.classList.add('blurred'); span.classList.remove('revealed-mic'); revealedWords--;
             }
             updateAccuracy();
           };
@@ -723,7 +742,7 @@
       updateAccuracy();
     }
 
-    /* 4. تشغيل الصوت المباشر لسيرفرات MP3Quran */
+    /* 4. تشغيل الصوت المباشر (سيرفرات MP3Quran المباشرة للسورة) */
     function getSurahAudioUrl(surahNum, reciterKey) {
       const paddedNum = String(surahNum).padStart(3, '0');
       if (reciterKey === 'afs') {
@@ -833,7 +852,7 @@
       });
     }
 
-    /* 6. المسبحة وعداد الصلاة على النبي */
+    /* 6. المسبحة وعداد الصلاة على النبي التفاعلي */
     function incrementTasbeeh() {
       tasbeehVal++; document.getElementById('tasbeehCount').innerText = tasbeehVal;
       if (navigator.vibrate) navigator.vibrate(30);
