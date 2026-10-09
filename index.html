@@ -234,7 +234,6 @@
       text-align: center; padding: 1.2rem; color: var(--text-muted); font-size: 0.85rem;
       border-top: 1px solid var(--card-border); margin-top: auto; background: var(--bg-color); line-height: 1.6;
     }
-    footer a { color: var(--accent-emerald); text-decoration: none; font-weight: bold; }
 
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85);
@@ -318,8 +317,8 @@
           <select id="surahSelect" onchange="loadSurah()"></select>
           
           <select id="reciterSelect" onchange="changeReciter()">
-            <option value="ar.alafasy">الشيخ مشاري العفاسي</option>
-            <option value="ar.abdulbasitmurattal">الشيخ عبد الباسط عبد الصمد</option>
+            <option value="afs">الشيخ مشاري العفاسي</option>
+            <option value="basit">الشيخ عبد الباسط عبد الصمد (مرتل)</option>
           </select>
 
           <button id="playAudioBtn" class="btn-action" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="toggleAudio()">▶️ تشغيل التلاوة</button>
@@ -469,6 +468,17 @@
     let currentAudio = new Audio();
     let isPlayingAudio = false;
 
+    /* نطق الكلمة المحددة فور كشف التمويه */
+    function speakWord(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ar-SA';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
     /* 1. المظهر */
     function applySavedTheme() {
       const savedTheme = localStorage.getItem('appTheme');
@@ -488,7 +498,7 @@
       document.getElementById('themeBtn').innerText = isLight ? '☀️' : '🌙';
     }
 
-    /* 2. الأذكار الكاملة والمعززة */
+    /* 2. الأذكار الكاملة */
     const azkarData = {
       sabah: [
         { text: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: {اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ...}", count: "مرة واحدة" },
@@ -533,15 +543,15 @@
       document.documentElement.style.setProperty('--blur-theme-color', colorVal);
     }
 
-    /* 3. تنظيف وتجريب الكلام للتعرف الصوتي الدقيق وإزالة التمويه فوراً */
+    /* 3. التعرف الصوتي وتفكيك التمويه لحظياً */
     function normalizeArabic(text) {
       if (!text) return '';
       return text
-        .replace(/[\u064B-\u065F\u0670]/g, '') // إزالة التشكيل والتنوين
-        .replace(/[أإآٱ]/g, 'ا') // توحيد الهمزات
+        .replace(/[\u064B-\u065F\u0670]/g, '')
+        .replace(/[أإآٱ]/g, 'ا')
         .replace(/ة/g, 'ه')
         .replace(/ى/g, 'ي')
-        .replace(/[^\w\sء-ي]/gi, '') // إزالة الرموز وعلامات الترقيم
+        .replace(/[^\w\sء-ي]/gi, '')
         .trim();
     }
 
@@ -570,7 +580,6 @@
 
       spokenWords.forEach(spoken => {
         if (spoken.length < 2) return;
-        // المطابقة مع أول 5 كلمات مظللة لإزالة التمويه فوراً بالترتيب الصحيح
         for (let i = 0; i < Math.min(5, blurredSpans.length); i++) {
           const target = blurredSpans[i];
           const cleanTarget = target.dataset.clean;
@@ -578,6 +587,7 @@
             target.classList.remove('blurred');
             target.classList.add('revealed-mic');
             revealedWords++;
+            speakWord(target.innerText);
             break;
           }
         }
@@ -689,9 +699,14 @@
           span.dataset.clean = normalizeArabic(w);
           span.onclick = () => {
             if (span.classList.contains('blurred')) {
-              span.classList.remove('blurred'); span.classList.add('revealed-mic'); revealedWords++;
+              span.classList.remove('blurred'); 
+              span.classList.add('revealed-mic'); 
+              revealedWords++;
+              speakWord(w); /* نطق الكلمة المحددة فوراً */
             } else if (isTestMode) {
-              span.classList.add('blurred'); span.classList.remove('revealed-mic'); revealedWords--;
+              span.classList.add('blurred'); 
+              span.classList.remove('revealed-mic'); 
+              revealedWords--;
             }
             updateAccuracy();
           };
@@ -708,7 +723,17 @@
       updateAccuracy();
     }
 
-    /* 4. قراءة الشيوخ المفضلة فقط */
+    /* 4. تشغيل الصوت المباشر لسيرفرات MP3Quran */
+    function getSurahAudioUrl(surahNum, reciterKey) {
+      const paddedNum = String(surahNum).padStart(3, '0');
+      if (reciterKey === 'afs') {
+        return `https://server8.mp3quran.net/afs/${paddedNum}.mp3`;
+      } else if (reciterKey === 'basit') {
+        return `https://server7.mp3quran.net/basit/${paddedNum}.mp3`;
+      }
+      return `https://server8.mp3quran.net/afs/${paddedNum}.mp3`;
+    }
+
     async function toggleAudio() {
       const num = document.getElementById('surahSelect').value;
       const reciter = document.getElementById('reciterSelect').value;
@@ -720,7 +745,7 @@
       }
 
       btn.innerText = '⏳ جاري التحميل...';
-      const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${num}.mp3`;
+      const audioUrl = getSurahAudioUrl(num, reciter);
       currentAudio.src = audioUrl;
 
       try {
@@ -728,7 +753,7 @@
         isPlayingAudio = true;
         btn.innerText = '⏸️ إيقاف التلاوة';
       } catch (e) {
-        alert('تعذر تشغيل الصوت، يرجى إعادة المحاولة.');
+        alert('تعذر تشغيل الصوت، يرجى التأكد من الاتصال بالإنترنت.');
         stopAudio();
       }
     }
@@ -742,7 +767,10 @@
     }
 
     function changeReciter() {
-      if (isPlayingAudio) { stopAudio(); toggleAudio(); }
+      if (isPlayingAudio) {
+        stopAudio();
+        toggleAudio();
+      }
     }
 
     currentAudio.onended = () => { stopAudio(); };
@@ -805,14 +833,13 @@
       });
     }
 
-    /* 6. المسبحة والعدادات التفاعلية */
+    /* 6. المسبحة وعداد الصلاة على النبي */
     function incrementTasbeeh() {
       tasbeehVal++; document.getElementById('tasbeehCount').innerText = tasbeehVal;
       if (navigator.vibrate) navigator.vibrate(30);
     }
     function resetTasbeeh() { tasbeehVal = 0; document.getElementById('tasbeehCount').innerText = 0; }
 
-    /* عداد الصلاة على النبي التفاعلي */
     function incrementSalawat() {
       salawatVal++; document.getElementById('salawatCount').innerText = salawatVal;
       if (navigator.vibrate) navigator.vibrate(45);
